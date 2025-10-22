@@ -1,0 +1,1060 @@
+openapi: 3.0.0
+info:
+  title: MCash AgriFin
+  version: 1.0.0
+servers:
+  - url: http://{{url}}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: User
+  - name: Wallet
+  - name: Loan Facility
+  - name: Loan Request
+  - name: USSD
+  - name: Utility
+  - name: Commodity
+  - name: Vendor Storage
+  - name: Transaction
+  - name: Vendor Inventory
+  - name: PaymentQueue
+paths:
+  /user/add:
+    post:
+      tags:
+        - User
+      summary: Add trader
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: Moses
+                last_name:
+                  type: string
+                  example: Matovu
+                other_name:
+                  type: string
+                user_type_id:
+                  type: integer
+                  example: '1'
+                nin:
+                  type: string
+                  example: CM840445364MV
+                email:
+                  type: string
+                phone:
+                  type: integer
+                  example: '256705188046'
+                username:
+                  type: string
+                password:
+                  type: string
+                pin:
+                  type: integer
+                  example: '5555'
+                gender_id:
+                  type: integer
+                  example: '2'
+                dob:
+                  type: string
+                  example: '1984-05-01'
+                village_id:
+                  type: integer
+                  example: '1'
+                farmer_group_id:
+                  type: integer
+                  example: '1'
+                address:
+                  type: string
+                enabled:
+                  type: integer
+                  example: '1'
+                creator_id:
+                  type: integer
+                  example: '1'
+                changed_otp:
+                  type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user/wallet-balance:
+    get:
+      tags:
+        - User
+      summary: User Wallet Balance
+      parameters:
+        - name: phone
+          in: query
+          schema:
+            type: integer
+          example: '256782389100'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /users:
+    get:
+      tags:
+        - User
+      summary: Get Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user:
+    get:
+      tags:
+        - User
+      summary: Get Single User
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          example: '12'
+        - name: subtrader
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user/account/details/26:
+    get:
+      tags:
+        - User
+      summary: Get User Account Details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: null
+          in: query
+          schema:
+            type: string
+        - name: request_status_id
+          in: query
+          schema:
+            type: integer
+          example: '2'
+        - name: show_storage_logs
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /authenticate:
+    post:
+      tags:
+        - User
+      summary: Authenticate User
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: integer
+                  example: '256782979987'
+                pin:
+                  type: integer
+                  example: '5555'
+                otp:
+                  type: integer
+                  example: '71826'
+                email:
+                  type: string
+                  example: hokoth@mcash.ug
+                passwoord:
+                  type: string
+                  example: test
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /admin-user/authenticate:
+    post:
+      tags:
+        - User
+      summary: Authenticate Admin
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: integer
+                  example: '256782120367'
+                pin:
+                  type: integer
+                  example: '5555'
+                otp:
+                  type: integer
+                  example: '31780'
+                email:
+                  type: string
+                  example: hokoth@mcash.ug
+                password:
+                  type: string
+                  example: test
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /farmer/add:
+    post:
+      tags:
+        - User
+      summary: Add Farmer Account
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: Doc
+                last_name:
+                  type: string
+                  example: Pepper
+                other_name:
+                  type: string
+                  example: Gundi
+                user_type_id:
+                  type: integer
+                  example: '1'
+                nin:
+                  type: string
+                  example: CM840445364XT
+                email:
+                  type: string
+                phone:
+                  type: integer
+                  example: '256782389100'
+                username:
+                  type: string
+                password:
+                  type: string
+                pin:
+                  type: integer
+                  example: '5555'
+                gender_id:
+                  type: integer
+                  example: '2'
+                dob:
+                  type: string
+                  example: '1984-05-01'
+                village_id:
+                  type: integer
+                  example: '1'
+                farmer_group_id:
+                  type: integer
+                  example: '1'
+                address:
+                  type: string
+                enabled:
+                  type: integer
+                  example: '1'
+                creator_id:
+                  type: integer
+                  example: '1'
+                changed_otp:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user-wallet-txn/add:
+    post:
+      tags:
+        - Wallet
+      summary: User Wallet Txn
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  example: '1'
+                amount:
+                  type: integer
+                  example: '100000'
+                narrative:
+                  type: string
+                  example: Topup
+                wallet_txn_type:
+                  type: integer
+                  example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user-wallet-txns:
+    get:
+      tags:
+        - Wallet
+      summary: Get User Wallet Txns
+      parameters:
+        - name: user_id
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user-wallet-txn:
+    get:
+      tags:
+        - Wallet
+      summary: Get Single User Wallet Txn
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /purchase-commodity:
+    post:
+      tags:
+        - Transaction
+      summary: Purchase Commodity
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                auth_user:
+                  type: integer
+                  example: '1'
+                trader_phone:
+                  type: integer
+                  example: '256782979987'
+                pin:
+                  type: integer
+                  example: '5555'
+                phone:
+                  type: integer
+                  example: '256740098410'
+                price:
+                  type: integer
+                  example: '100'
+                variant_id:
+                  type: integer
+                  example: '1'
+                grade_id:
+                  type: integer
+                  example: '1'
+                quantity:
+                  type: integer
+                  example: '10'
+                vendor_storage_id:
+                  type: integer
+                  example: '1'
+                new_profile:
+                  type: string
+                  example: |-
+                    {
+                        "first_name": "Hamid",
+                        "last_name": "Semix",
+                        "other_name": "",
+                        "district": "Masaka",
+                        "county": "",
+                        "sub_county": "",
+                        "parish": "",
+                        "village": "Nyendo",
+                        "phone": "0740098410",
+                        "user_type_id": "1"
+                    }
+                status_id:
+                  type: integer
+                  example: '1'
+                '':
+                  type: string
+                  description: '256785388727'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user-loan-facility/add:
+    post:
+      tags:
+        - Loan Facility
+      summary: Add User Loan Facility
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                amount:
+                  type: string
+                narrative:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user-loan-facilities:
+    get:
+      tags:
+        - Loan Facility
+      summary: Get Loan Facilities
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user-loan-facility:
+    get:
+      tags:
+        - Loan Facility
+      summary: Get Loan Facility
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user-loan-request/add:
+    post:
+      tags:
+        - Loan Request
+      summary: Add User Loan Request
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                amount:
+                  type: string
+                narrative:
+                  type: string
+                request_status_id:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user-loan-request/edit:
+    post:
+      tags:
+        - Loan Request
+      summary: Edit User Loan Request
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                user_id:
+                  type: string
+                amount:
+                  type: string
+                narrative:
+                  type: string
+                request_status_id:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user-loan-request/approve:
+    post:
+      tags:
+        - Loan Request
+      summary: Approve User Loan Request
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: '1'
+                request_status:
+                  type: string
+                  description: approve | reject
+                  example: approve
+                amount:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /user-loan-requests:
+    get:
+      tags:
+        - Loan Request
+      summary: Get Loan Requests
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /ussd:
+    post:
+      tags:
+        - USSD
+      summary: USSD
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                sessionId:
+                  type: integer
+                  example: '0000000'
+                serviceCode:
+                  type: string
+                  example: '*384*404404'
+                phoneNumber:
+                  type: integer
+                  description: Off Taker Account
+                  example: '256703000788'
+                text:
+                  type: string
+                  example: 1*2*1*1*750*35*256782120367*5555
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ''
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /utility/send-email:
+    post:
+      tags:
+        - Utility
+      summary: Email Utility
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                from_sender:
+                  type: string
+                  example: Testing Chap
+                from_email:
+                  type: string
+                  example: noreply@mcash.ug
+                to_email:
+                  type: string
+                  example: ssekono@mcash.ug
+                subject:
+                  type: string
+                  example: Testing Email API
+                message:
+                  type: string
+                  example: >-
+                    We are finding an alternative to the NITA server for email
+                    service
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /commodities:
+    get:
+      tags:
+        - Commodity
+      summary: Get Commodities
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /commodity:
+    get:
+      tags:
+        - Commodity
+      summary: Get Single Commodity
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /commodity-variants:
+    get:
+      tags:
+        - Commodity
+      summary: Get Commodity Variants
+      parameters:
+        - name: ids
+          in: query
+          schema:
+            type: string
+          example: 1,2
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /commodity-variant:
+    get:
+      tags:
+        - Commodity
+      summary: Get Single Commodity Variant
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /commodity-grades:
+    get:
+      tags:
+        - Commodity
+      summary: Get Commodity Grades
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /commodity-grade:
+    get:
+      tags:
+        - Commodity
+      summary: Get Single Commodity Grade
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          example: '3'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /vendor-storages:
+    get:
+      tags:
+        - Vendor Storage
+      summary: Get  Approved VendorStorages
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: vendor_id
+          in: query
+          schema:
+            type: integer
+          example: '2'
+        - name: request_status_id
+          in: query
+          schema:
+            type: integer
+          example: '2'
+        - name: show_storage_logs
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /vendor-storage:
+    get:
+      tags:
+        - Vendor Storage
+      summary: Get Vendor Storage Request
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          example: '99'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /vendor-storage/edit:
+    post:
+      tags:
+        - Vendor Storage
+      summary: Post Vendor Storage Edit
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: ' 3'
+                name:
+                  type: string
+                  example: Mbarara annex storage
+                address:
+                  type: string
+                  example: ' Mbarara east'
+                capacity:
+                  type: string
+                  example: 1000 tonnes
+                narrative:
+                  type: string
+                  example: storage in  mbarara
+                vendor_id:
+                  type: string
+                  example: ' 2'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          example: '3'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /vendor-storage/delete:
+    post:
+      tags:
+        - Vendor Storage
+      summary: Post Vendor Storage Delete
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: ' 10'
+                name:
+                  type: string
+                  example: Mbarara storage new
+                address:
+                  type: string
+                  example: ' Mbarara'
+                capacity:
+                  type: string
+                  example: 2000 tonnes
+                narrative:
+                  type: string
+                  example: storage
+                vendor_id:
+                  type: string
+                  example: ' 1'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /vendor-storage/approve:
+    post:
+      tags:
+        - Vendor Storage
+      summary: Approve  Vendor Storage Rquest
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: '1'
+                request_status:
+                  type: string
+                  description: approve | reject
+                  example: approve
+                amount:
+                  type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /vendor-storage/add:
+    post:
+      tags:
+        - Vendor Storage
+      summary: Post Vendor  Single Storage
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: '102'
+                name:
+                  type: string
+                  example: test 3
+                address:
+                  type: string
+                  example: test3
+                capacity:
+                  type: string
+                  example: 2011 tonnes
+                narrative:
+                  type: string
+                  example: storage
+                vendor_id:
+                  type: string
+                  example: ' 1'
+                request_status_id:
+                  type: integer
+                  example: '1'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /transactions:
+    get:
+      tags:
+        - Transaction
+      summary: Get Transactions
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /transaction:
+    get:
+      tags:
+        - Transaction
+      summary: Get Transaction
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          example: '95'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /vendor-inventory/inventories:
+    get:
+      tags:
+        - Vendor Inventory
+      summary: Get Vendor Inventory
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /vendor-inventory:
+    get:
+      tags:
+        - Vendor Inventory
+      summary: Get  Single Vendor Inventory
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          example: '11'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /vendor-inventory/add:
+    post:
+      tags:
+        - Vendor Inventory
+      summary: Add Vendor Inventory
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: '56'
+                commodity_grade_id:
+                  type: integer
+                  example: '1'
+                quantity:
+                  type: integer
+                  example: '100'
+                vendor_storage_id:
+                  type: string
+                purchase_id:
+                  type: string
+                narrative:
+                  type: string
+                amount:
+                  type: integer
+                  example: '1000'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /payment-queue/add:
+    post:
+      tags:
+        - PaymentQueue
+      summary: payment_queue
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                internal_ref:
+                  type: integer
+                  example: '2'
+                external_ref:
+                  type: integer
+                  example: '6'
+                service_provider:
+                  type: string
+                  example: Mtn
+                service_provider_data:
+                  type: string
+                  example: payment
+                status_id:
+                  type: integer
+                  example: '1'
+                purchase_id:
+                  type: integer
+                  example: '1'
+                narrative:
+                  type: integer
+                  example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /payment:
+    get:
+      tags:
+        - PaymentQueue
+      summary: getPayment
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          example: '253'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /payments-status:
+    get:
+      tags:
+        - PaymentQueue
+      summary: getPayments
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}

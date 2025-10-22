@@ -1,0 +1,35 @@
+{
+  "name": "developer-profile-system",
+  "version": "1.0.0",
+  "description": "A talent profile management system with REST API and dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node src/utils/seedData.js",
+    "test": "echo \"No tests specified\" && exit 0",
+    "status": "node -e \"require('./src/config/database').getStatus()\""
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.8.1",
+    "helmet": "^7.0.0",
+    "joi": "^17.9.2",
+    "mongoose": "^8.19.2",
+    "morgan": "^1.10.1",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "keywords": [
+    "express",
+    "api",
+    "profiles",
+    "developers"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
