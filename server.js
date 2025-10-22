@@ -8,9 +8,9 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 // Project Specific
-const dbManager = require('./src/config/database'); // Renamed for clarity
+const dbManager = require('./src/config/database');
 const profileRoutes = require('./src/routes/profileRoutes');
-const globalErrorHandler = require('./src/middleware/errorHandler'); // Renamed to reflect its role
+const globalErrorHandler = require('./src/middleware/errorHandler');
 
 // --- Configuration ---
 const app = express();

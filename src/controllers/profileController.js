@@ -1,175 +1,184 @@
-const Profile = require("../models/Profile");
+const Profile = require('../models/Profile');
 
-/**
- * Helper function for consistent error responses.
- * @param {object} res - Express response object.
- * @param {number} status - HTTP status code.
- * @param {string} msg - Error message.
- * @param {Error} [err] - Optional error object for logging.
- */
-const sendError = (res, status, msg, err) => {
-  if (err) {
-    // Log the full error, but send a simpler message to the client
-    console.error(`Controller Error [${status}]: ${msg}`, err.message || err);
-  } else {
-    console.warn(`Controller Warning [${status}]: ${msg}`);
-  }
-
-  res.status(status).json({
-    message: msg,
-  });
-};
-
-// --- Read Operations ---
-
-// GET /api/profiles
-// Lists all profiles with basic pagination.
+// @desc    Get all profiles with pagination
+// @route   GET /api/profiles
+// @access  Public
 const getProfiles = async (req, res) => {
   try {
-    // Set sensible defaults if queries are missing
-    const page = parseInt(req.query.page || 1);
-    const limit = parseInt(req.query.limit || 10);
-
-    const { data, pagination } = await Profile.findAllProfiles(page, limit);
-
-    res.json({ data, pagination });
-  } catch (error) {
-    sendError(res, 500, "Failed to fetch profiles.", error);
-  }
-};
-
-// GET /api/profiles/:id
-// Gets a single profile by ID.
-const getProfileById = async (req, res) => {
-  try {
-    const id = parseInt(req.params.id);
-    const profile = await Profile.findById(id);
-
-    if (!profile) {
-      return sendError(res, 404, `Profile with ID ${id} not found.`);
-    }
-
-    res.json({ data: profile });
-  } catch (error) {
-    sendError(res, 500, "Failed to retrieve profile.", error);
-  }
-};
-
-// GET /api/profiles/search
-// Handles complex filtering and searching.
-const searchProfiles = async (req, res) => {
-  try {
-    const {
-      skills,
-      location,
-      availableForWork,
-      minExperience,
-      maxHourlyRate,
-      page = 1,
-      limit = 10,
-    } = req.query;
-
-    // Build the query object only with provided values
-    const searchQuery = {
-      ...(skills && { skills }),
-      ...(location && { location }),
-      ...(availableForWork !== undefined && { availableForWork }),
-      ...(minExperience && { minExperience }),
-      ...(maxHourlyRate && { maxHourlyRate }),
-    };
-
-    const { data, pagination } = await Profile.searchProfiles(
-      searchQuery,
-      parseInt(page),
-      parseInt(limit)
-    );
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    
+    const result = await Profile.findAllProfiles(page, limit);
 
     res.json({
-      data,
-      pagination,
-      criteria: searchQuery, // Send back the criteria for client feedback
+      success: true,
+      data: result.data,
+      pagination: result.pagination
     });
   } catch (error) {
-    sendError(res, 500, "Failed to execute search.", error);
+    console.error('Error fetching profiles:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching profiles'
+    });
   }
 };
 
-// --- Write Operations ---
-// POST /api/profiles
-// Creates a new profile.
+// @desc    Get single profile
+// @route   GET /api/profiles/:id
+// @access  Public
+const getProfileById = async (req, res) => {
+  try {
+    const profile = await Profile.findById(parseInt(req.params.id));
+    
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: 'Profile not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: profile
+    });
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching profile'
+    });
+  }
+};
+
+// @desc    Create profile
+// @route   POST /api/profiles
+// @access  Public
 const createProfile = async (req, res) => {
   try {
-    // Quick check: has this email been used?
-    if (await Profile.findByEmail(req.body.email)) {
-      return sendError(res, 409, "A profile with this email already exists.");
+    // Check if email already exists
+    const existingProfile = await Profile.findByEmail(req.body.email);
+    if (existingProfile) {
+      return res.status(400).json({
+        success: false,
+        message: 'Profile with this email already exists'
+      });
     }
 
     const profile = await Profile.createProfile(req.body);
-
-    // Status 201 for Resource Created
+    
     res.status(201).json({
+      success: true,
       data: profile,
-      message: "Profile created successfully!",
+      message: 'Profile created successfully'
     });
   } catch (error) {
-    sendError(res, 500, "Could not create the profile.", error);
+    console.error('Error creating profile:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while creating profile'
+    });
   }
 };
 
-// PUT /api/profiles/:id
-// Updates an existing profile.
+// @desc    Update profile
+// @route   PUT /api/profiles/:id
+// @access  Public
 const updateProfile = async (req, res) => {
-  const id = parseInt(req.params.id);
   try {
-    const existingProfile = await Profile.findById(id);
-
+    // Check if profile exists
+    const existingProfile = await Profile.findById(parseInt(req.params.id));
     if (!existingProfile) {
-      return sendError(res, 404, `Profile with ID ${id} not found for update.`);
+      return res.status(404).json({
+        success: false,
+        message: 'Profile not found'
+      });
     }
 
-    // Check for email collision only if the email is being changed
+    // Check if email is being changed to an existing one
     if (req.body.email && req.body.email !== existingProfile.email) {
-      if (await Profile.findByEmail(req.body.email)) {
-        return sendError(
-          res,
-          409,
-          "Cannot use this email; it belongs to another profile."
-        );
+      const emailExists = await Profile.findByEmail(req.body.email);
+      if (emailExists) {
+        return res.status(400).json({
+          success: false,
+          message: 'Profile with this email already exists'
+        });
       }
     }
 
-    const updatedProfile = await Profile.updateProfile(id, req.body);
-
+    const updatedProfile = await Profile.updateProfile(parseInt(req.params.id), req.body);
+    
     res.json({
+      success: true,
       data: updatedProfile,
-      message: "Profile updated successfully.",
+      message: 'Profile updated successfully'
     });
   } catch (error) {
-    sendError(res, 500, `Failed to update profile ID ${id}.`, error);
+    console.error('Error updating profile:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating profile'
+    });
   }
 };
 
-// DELETE /api/profiles/:id
-// Removes a profile.
+// @desc    Delete profile
+// @route   DELETE /api/profiles/:id
+// @access  Public
 const deleteProfile = async (req, res) => {
-  const id = parseInt(req.params.id);
   try {
-    if (!(await Profile.findById(id))) {
-      return sendError(
-        res,
-        404,
-        `Profile ID ${id} is already gone or never existed.`
-      );
+    const profile = await Profile.findById(parseInt(req.params.id));
+    
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: 'Profile not found'
+      });
     }
 
-    await Profile.deleteProfile(id);
-
-    // Send a 204 No Content for a successful deletion, or a 200 with a message
-    res.status(200).json({
-      message: `Profile ID ${id} deleted successfully.`,
+    await Profile.deleteProfile(parseInt(req.params.id));
+    
+    res.json({
+      success: true,
+      message: 'Profile deleted successfully'
     });
   } catch (error) {
-    sendError(res, 500, `Failed to delete profile ID ${id}.`, error);
+    console.error('Error deleting profile:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while deleting profile'
+    });
+  }
+};
+
+// @desc    Search profiles
+// @route   GET /api/profiles/search
+// @access  Public
+const searchProfiles = async (req, res) => {
+  try {
+    const { skills, location, availableForWork, minExperience, maxHourlyRate, page = 1, limit = 10 } = req.query;
+    
+    let searchQuery = {};
+    if (skills) searchQuery.skills = skills;
+    if (location) searchQuery.location = location;
+    if (availableForWork !== undefined) searchQuery.availableForWork = availableForWork;
+    if (minExperience) searchQuery.minExperience = minExperience;
+    if (maxHourlyRate) searchQuery.maxHourlyRate = maxHourlyRate;
+
+    const result = await Profile.searchProfiles(searchQuery, parseInt(page), parseInt(limit));
+
+    res.json({
+      success: true,
+      data: result.data,
+      pagination: result.pagination,
+      searchQuery
+    });
+  } catch (error) {
+    console.error('Error searching profiles:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while searching profiles'
+    });
   }
 };
 
@@ -179,5 +188,5 @@ module.exports = {
   createProfile,
   updateProfile,
   deleteProfile,
-  searchProfiles,
+  searchProfiles
 };
